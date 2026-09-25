@@ -1,16 +1,15 @@
 import { registerAgent, lookupAgent } from "./identity.js";
 import { submitFeedback } from "./reputation.js";
-
-const ZERO_HASH = "0x" + "00".repeat(32);
+import { wrapReport } from "./report.js";
 
 async function main() {
-//   const agentId = await registerAgent("Free Plestine");
-//   console.log("Registered agent:", agentId.toString());
+  const { hash, uri } = await wrapReport('./dummy-report.json');
 
-//   const info = await lookupAgent(agentId);
-//   console.log("Verified:", info);
+  const agentId = await registerAgent(uri);
+  console.log("Registered agent:", agentId.toString());
+  console.log("Verified:", await lookupAgent(agentId));
 
-  const txHash = await submitFeedback(10509, 100, "Free Plestine", ZERO_HASH);
+  const txHash = await submitFeedback(agentId, 85, uri, hash);
   console.log("Feedback tx:", txHash);
 }
 
