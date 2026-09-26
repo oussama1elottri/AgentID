@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import 'dotenv/config';
 
 export const RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";
+// export const RPC_URL = process.env.RPC_URL || "https://sepolia.base.org";
 export const IDENTITY_ADDRESS = "0x8004A818BFB912233c491871b3d84c89A494BD9e";
 export const REPUTATION_ADDRESS = "0x8004B663056A597Dffe9eCcC1965A193B7388713";
 
