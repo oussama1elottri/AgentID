@@ -1,115 +1,88 @@
-# ProofAgent (ERC-8004 On-Chain AI Agent Identity & Evaluation)
+# ProofAgent: On-Chain Verification and Reputation Framework for Autonomous Agents
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![ERC Standard](https://img.shields.io/badge/Standard-ERC--8004-blue)](https://eips.ethereum.org)
-[![Network](https://img.shields.io/badge/Network-Ethereum_Sepolia_%7C_Base_Sepolia-green)](https://base.org)
-
-**ProofAgent** is an end-to-end framework for registering AI agent identities and anchoring verified evaluation reports on-chain using the **ERC-8004** standard (Trustless Agent Identity & Reputation Registries).
+## Abstract
+ProofAgent is an implementation framework for anchoring autonomous agent identities and evaluation metrics on-chain, compliant with the ERC-8004 (Trustless Agent Identity and Reputation Registries) standard. The framework decouples agent identity registration from evaluation reporting, utilizing Content-Addressed Decentralized Storage (IPFS) for evaluation artifacts and Ethereum Smart Contracts for cryptographic state commitment.
 
 ---
 
-## 🌟 Architecture Overview
+## Protocol Specification
+
+### System Components
 
 ```
-                      +-----------------------------+
-                      |   ProofAgent Evaluation     |
-                      |   (Benchmark & Execution)   |
-                      +--------------+--------------+
-                                     |
-                                     v
-                      +-----------------------------+
-                      |   IPFS Report Pinning       |
-                      |   (Pinata Metadata Service) |
-                      +--------------+--------------+
-                                     |
-                                     v
-             +-----------------------+-----------------------+
-             |                                               |
-             v                                               v
-+--------------------------+                   +--------------------------+
-|  ERC-8004 Identity       |                   |  ERC-8004 Reputation     |
-|  Registry (Agent NFT)    |                   |  Registry (Feedback)     |
-+--------------------------+                   +--------------------------+
++-------------------------------------------------------------------+
+|                        Evaluation Pipeline                        |
++-------------------------------------------------------------------+
+                                  |
+                                  v
++-------------------------------------------------------------------+
+|                   Content-Addressed Storage                       |
+|                             (IPFS)                                |
++-------------------------------------------------------------------+
+                                  |
+                 +----------------+----------------+
+                 |                                 |
+                 v                                 v
++---------------------------------+ +-------------------------------+
+|    ERC-8004 Identity Registry   | | ERC-8004 Reputation Registry  |
+| (Agent Non-Fungible Token State)| |   (On-Chain Metric Anchor)    |
++---------------------------------+ +-------------------------------+
 ```
 
-1. **Agent Owner (`clientWallet`)**: Registers the AI Agent's identity on-chain via ERC-8004 Identity Registry (`0x8004A818BFB912233c491871b3d84c89A494BD9e`).
-2. **Evaluator (`proofAgentWallet`)**: Pins evaluation benchmark traces to IPFS and anchors verified feedback metrics on the ERC-8004 Reputation Registry (`0x8004B663056A597Dffe9eCcC1965A193B7388713`).
+1. **Identity Registry (`ERC8004Identity`)**: Manages agent registration and assigns unique state identifiers (`agentId`) mapped to agent metadata URIs (`tokenURI`).
+2. **Reputation Registry (`ERC8004Reputation`)**: Records quantitative feedback, quality scores, domain tags, and cryptographic hashes (`feedbackHash`) associated with agent evaluations.
+3. **Decentralized Storage (`IPFS`)**: Maintains immutable content-addressed storage for execution traces and benchmark artifacts.
 
 ---
 
-## 📁 Repository Structure
+## Contract Addresses
 
-```
-├── config.js              # Provider, wallets, contract addresses & ABIs
-├── identity.js            # ERC-8004 Agent Registration module
-├── reputation.js          # On-chain evaluation feedback anchoring module
-├── report.js              # Pinata IPFS metadata wrapper
-├── lookup.js              # Agent identity lookup and query module
-├── main.js                # Full lifecycle orchestrator script
-├── dummy-report.json      # Sample evaluation report payload
-├── schema/
-│   └── report-schema.json # JSON Schema for ProofAgent benchmark reports
-├── test/
-│   └── integration.test.js# Integration test suite
-├── .env.example           # Environment template
-└── L2_MIGRATION_GUIDE.md  # Migration guide for Base Sepolia L2
-```
+| Registry | Contract Address | Network |
+| :--- | :--- | :--- |
+| **ERC-8004 Identity** | `0x8004A818BFB912233c491871b3d84c89A494BD9e` | Ethereum Sepolia / Base Sepolia |
+| **ERC-8004 Reputation** | `0x8004B663056A597Dffe9eCcC1965A193B7388713` | Ethereum Sepolia / Base Sepolia |
 
 ---
 
-## 🚀 Quick Start
+## File Architecture
 
-### 1. Prerequisites
-- Node.js v18+
-- Sepolia or Base Sepolia testnet ETH
-- Pinata IPFS API JWT
+- `config.js`: RPC initialization, cryptographic wallet instances, contract addresses, and Application Binary Interfaces (ABIs).
+- `identity.js`: Interface module for `ERC8004Identity.register(string tokenURI)`.
+- `reputation.js`: Interface module for `ERC8004Reputation.giveFeedback(...)`.
+- `report.js`: IPFS content-addressing module for evaluation artifact storage.
+- `lookup.js`: Query module for reading on-chain agent state and reputation entries.
+- `main.js`: Primary execution script executing the end-to-end verification lifecycle.
+- `dummy-report.json`: Sample evaluation artifact payload.
+- `.env.example`: Configuration parameter template.
+- `L2_MIGRATION_GUIDE.md`: Technical specification for Layer 1 to Layer 2 execution transition.
 
-### 2. Installation
-```bash
-npm install
-```
+---
 
-### 3. Environment Configuration
-Copy `.env.example` to `.env` and fill in your keys:
+## Execution Instructions
+
+### 1. Environment Configuration
+Create a `.env` configuration file based on `.env.example`:
+
 ```bash
 cp .env.example .env
 ```
 
-Set your keys inside `.env`:
-```env
-PRIVATE_KEY=0x_your_client_wallet_private_key
-PROOFAGENT_PRIVATE_KEY=0x_your_evaluator_wallet_private_key
+Define environment parameters:
+```ini
+PRIVATE_KEY=0x_client_wallet_private_key
+PROOFAGENT_PRIVATE_KEY=0x_evaluator_wallet_private_key
 PINATA_JWT=your_pinata_jwt_token
 RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 ```
 
-### 4. Running the Main Demo
-Execute the complete workflow:
+### 2. Execution
+Execute the pipeline script:
+
 ```bash
 node main.js
 ```
 
 ---
 
-## 🧪 Testing
-
-Run the automated integration test suite:
-```bash
-node --test test/integration.test.js
-```
-
----
-
-## ⛽ Multi-Chain & Layer 2 Support
-
-ProofAgent ERC-8004 contracts are deployed at identical deterministic addresses across both Ethereum Sepolia L1 and Base Sepolia L2:
-
-- **ERC-8004 Identity:** `0x8004A818BFB912233c491871b3d84c89A494BD9e`
-- **ERC-8004 Reputation:** `0x8004B663056A597Dffe9eCcC1965A193B7388713`
-
-For instructions on reducing transaction gas costs by >99% using Base Sepolia L2, see [L2_MIGRATION_GUIDE.md](file:///Users/itadmin/Documents/Fi/blockchain/proofAgent/demo/ethers-rpc-demo/L2_MIGRATION_GUIDE.md).
-
----
-
-## 📄 License
-[MIT License](LICENSE)
+## License
+MIT

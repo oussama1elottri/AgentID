@@ -1,56 +1,23 @@
-# ProofAgent L2 Migration Guide (Ethereum Sepolia -> Base Sepolia)
+# Layer 2 Protocol Execution Specification
 
-## Overview
-ProofAgent utilizes **ERC-8004** contracts deployed on Ethereum Sepolia (L1) and Base Sepolia (L2) to register AI agent identities and anchor immutable reputation evaluations.
+## 1. Abstract
+This document specifies the deployment and execution parameters for running ProofAgent protocols on Base Sepolia (Layer 2) to optimize transaction costs. Layer 2 execution preserves the semantic validity of ERC-8004 state commitments while reducing execution gas consumption.
 
-Migrating execution from L1 to L2 reduces gas fees by over **99%**, lowering transaction costs from ~`0.0002 ETH` per evaluation on L1 to ~`0.000002 ETH` on Base Sepolia L2.
+## 2. Network Specifications
 
----
+| Parameter | Ethereum Sepolia (L1) | Base Sepolia (L2) |
+| :--- | :--- | :--- |
+| **Chain ID** | `11155111` | `84532` |
+| **RPC Endpoint** | `https://ethereum-sepolia-rpc.publicnode.com` | `https://sepolia.base.org` |
+| **Identity Contract** | `0x8004A818BFB912233c491871b3d84c89A494BD9e` | `0x8004A818BFB912233c491871b3d84c89A494BD9e` |
+| **Reputation Contract** | `0x8004B663056A597Dffe9eCcC1965A193B7388713` | `0x8004B663056A597Dffe9eCcC1965A193B7388713` |
 
-## Contract Addresses
+## 3. Configuration
 
-Both L1 and L2 networks use identical ERC-8004 contract addresses:
+To execute state transitions on Base Sepolia, set `RPC_URL` in `.env` or update `config.js`:
 
-| Contract | Address |
-| :--- | :--- |
-| **ERC-8004 Identity Registry** | `0x8004A818BFB912233c491871b3d84c89A494BD9e` |
-| **ERC-8004 Reputation Registry** | `0x8004B663056A597Dffe9eCcC1965A193B7388713` |
-
----
-
-## How to Switch Networks
-
-### Option A: Environment Variable (`.env`)
-Update your `.env` file to point to Base Sepolia:
-```env
-RPC_URL=https://sepolia.base.org
-```
-
-### Option B: Code Switching (`config.js`)
-Toggle the `RPC_URL` constant in `config.js`:
 ```javascript
-// Base Sepolia L2
 export const RPC_URL = process.env.RPC_URL || "https://sepolia.base.org";
-
-// Ethereum Sepolia L1
-// export const RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";
 ```
 
----
-
-## Obtaining Base Sepolia Testnet ETH
-
-Before executing transactions on Base Sepolia L2, ensure both your **Client Wallet** (`PRIVATE_KEY`) and **ProofAgent Evaluator Wallet** (`PROOFAGENT_PRIVATE_KEY`) have L2 ETH:
-
-1. **Alchemy Base Sepolia Faucet:** [alchemy.com/faucets/base-sepolia](https://www.alchemy.com/faucets/base-sepolia)
-2. **QuickNode Base Sepolia Faucet:** [faucet.quicknode.com/base/sepolia](https://faucet.quicknode.com/base/sepolia)
-3. **Official Base Bridge:** [bridge.base.org/deposit](https://bridge.base.org/deposit) (Bridge ETH from Ethereum Sepolia L1 to Base Sepolia L2)
-
----
-
-## Verification
-
-Run the main execution script after configuring Base Sepolia RPC:
-```bash
-node main.js
-```
+Ensure that both operational keys (`PRIVATE_KEY` and `PROOFAGENT_PRIVATE_KEY`) maintain sufficient Layer 2 testnet ETH balances prior to initiating transactions.
