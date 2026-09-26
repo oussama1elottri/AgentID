@@ -55,6 +55,8 @@ ProofAgent is an implementation framework for anchoring autonomous agent identit
 │   └── lookup.js       # On-chain identity and reputation query module
 ├── data/
 │   └── dummy-report.json # Sample evaluation artifact payload
+├── test/
+│   └── integration.test.js # Integration test suite for protocol state
 ├── main.js             # Primary execution script
 └── .env.example        # Environment variable specification template
 ```
@@ -78,7 +80,14 @@ PINATA_JWT=your_pinata_jwt_token
 RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 ```
 
-### 2. Execution
+### 2. Protocol Testing
+Run the protocol integration test suite:
+
+```bash
+npm test
+```
+
+### 3. Execution
 Execute the main pipeline:
 
 ```bash
