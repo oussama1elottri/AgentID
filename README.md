@@ -7,7 +7,7 @@ ProofAgent is an implementation framework for anchoring autonomous agent identit
 
 ## Protocol Specification
 
-### System Components
+### System Architecture
 
 ```
 +-------------------------------------------------------------------+
@@ -44,17 +44,20 @@ ProofAgent is an implementation framework for anchoring autonomous agent identit
 
 ---
 
-## File Architecture
+## Repository Layout
 
-- `config.js`: RPC initialization, cryptographic wallet instances, contract addresses, and Application Binary Interfaces (ABIs).
-- `identity.js`: Interface module for `ERC8004Identity.register(string tokenURI)`.
-- `reputation.js`: Interface module for `ERC8004Reputation.giveFeedback(...)`.
-- `report.js`: IPFS content-addressing module for evaluation artifact storage.
-- `lookup.js`: Query module for reading on-chain agent state and reputation entries.
-- `main.js`: Primary execution script executing the end-to-end verification lifecycle.
-- `dummy-report.json`: Sample evaluation artifact payload.
-- `.env.example`: Configuration parameter template.
-- `L2_MIGRATION_GUIDE.md`: Technical specification for Layer 1 to Layer 2 execution transition.
+```
+├── src/
+│   ├── config.js       # Network RPC provider, cryptographic wallets, and ABIs
+│   ├── identity.js     # ERC-8004 identity registration module
+│   ├── reputation.js   # On-chain evaluation feedback anchoring module
+│   ├── report.js       # IPFS content-addressing module
+│   └── lookup.js       # On-chain identity and reputation query module
+├── data/
+│   └── dummy-report.json # Sample evaluation artifact payload
+├── main.js             # Primary execution script
+└── .env.example        # Environment variable specification template
+```
 
 ---
 
@@ -76,7 +79,7 @@ RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 ```
 
 ### 2. Execution
-Execute the pipeline script:
+Execute the main pipeline:
 
 ```bash
 node main.js

@@ -1,11 +1,11 @@
 import { ethers } from "ethers";
-import { provider, proofAgentWallet } from "./config.js";
-import { registerAgent, lookupAgent } from "./identity.js";
-import { submitFeedback } from "./reputation.js";
-import { wrapReport } from "./report.js";
+import { provider, proofAgentWallet } from "./src/config.js";
+import { registerAgent, lookupAgent } from "./src/identity.js";
+import { submitFeedback } from "./src/reputation.js";
+import { wrapReport } from "./src/report.js";
 
 async function main() {
-  const { hash, uri } = await wrapReport('./dummy-report.json');
+  const { hash, uri } = await wrapReport('./data/dummy-report.json');
 
   const before = await provider.getBalance(proofAgentWallet.address);
 
